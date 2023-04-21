@@ -1,0 +1,7 @@
+--extra-index-url http://ec2-18-118-128-69.us-east-2.compute.amazonaws.com:8080/simple/
+--trusted-host ec2-18-118-128-69.us-east-2.compute.amazonaws.com
+
+
+jdx-utils==1.1.1
+slack_bolt==1.16.2
+slack_sdk==3.20.0
