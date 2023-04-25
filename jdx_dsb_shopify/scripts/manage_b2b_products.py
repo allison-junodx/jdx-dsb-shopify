@@ -59,6 +59,7 @@ def update_snowflake_shopify_b2b_products(
     full_dst_table_name = f"{connection_parameters['database']}.{connection_parameters['schema']}.{dst_table_name}"
     logger.info(f"Updating {full_dst_table_name} with {mode} mode...")
     df['update_ts'] = str(datetime.now())
+    df['env']=get_secret_from_sm(SHOPIFY_SECRET_NAME)['SHOP_ENV']
     df.columns = [c.upper() for c in df.columns]
     sf_df = session.create_dataframe(df)
     sf_df.write.save_as_table(dst_table_name, mode=mode)
