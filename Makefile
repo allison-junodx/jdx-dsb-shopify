@@ -85,3 +85,7 @@ ipython: dev-start ## Provides an interactive ipython prompt
 clean: ## Clean out temp/compiled python files
 	find . -name __pycache__ -delete
 	find . -name "*.pyc" -delete
+
+
+manage_b2b_products:
+	docker exec jdx_dsb_shopify_$(ENV) python /mnt/jdx_dsb_shopify/scripts/manage_b2b_products.py

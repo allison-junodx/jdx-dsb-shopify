@@ -135,8 +135,6 @@ def update_product_pricing(
 @log_start_stop
 @log_runtime
 @setup_logging_env
-@click.command()
-@click.option("--update", is_flag=True, show_default=True, default=True, help="update product variants")
 def main():
     # get latest price information from Snowflake
     price_df = get_latest_prices()

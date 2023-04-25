@@ -1,6 +1,6 @@
 version: "3"
 services:
-  develop:
+  dev:
     build:
       context: .
     ports:
@@ -9,8 +9,27 @@ services:
       - ../:/mnt
     entrypoint: bash -c "cd /mnt && jupyter lab --NotebookApp.token='' --ip=0.0.0.0 --allow-root && /bin/bash"
     stdin_open: true
-    container_name: "jdx_dsb_shopify_develop_${USER}"
+    container_name: "jdx_dsb_shopify_dev"
     tty: true
+    environment:
+      - ENV=dev
+    env_file:
+      - ../.env
+
+
+  prd:
+    build:
+      context: .
+    ports:
+      - "8881:8888"
+    volumes:
+      - ../:/mnt
+    entrypoint: bash -c "cd /mnt && jupyter lab --NotebookApp.token='' --ip=0.0.0.0 --allow-root && /bin/bash"
+    stdin_open: true
+    container_name: "jdx_dsb_shopify_prd"
+    tty: true
+    environment:
+      - ENV=prd
     env_file:
       - ../.env
 

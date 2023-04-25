@@ -1,4 +1,12 @@
-SHOPIFY_SECRET_NAME = 'dsb-shopify-dev2-secret'
+import os
+
+shopify_secret_name = {
+    'dev': 'dsb-shopify-dev2-secret',
+    'beta': 'dsb-shopify-beta-secrets',
+    'prd': 'dsb-shopify-app-token'
+}
+
+SHOPIFY_SECRET_NAME = shopify_secret_name[os.environ['ENV']]
 
 # product details
 FST_SKU = '50875e49-4485-4405-b329-69877c13ee2d'
