@@ -23,6 +23,10 @@ class ShopifyHelper:
         }
 
     @property
+    def shop_env(self):
+        return self._shop_env
+
+    @property
     def headers(self):
         return self._headers
 

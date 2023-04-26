@@ -16,7 +16,7 @@ from jdx_dsb_shopify.util.shopify_utils import ShopifyHelper
 logger = logging.getLogger(__name__)
 
 @log_start_stop
-def get_last_variant_update():
+def get_last_variant_update(shop_env):
     snowflake_secrets = get_secret_from_sm(SNOWFLAKE_SECRET_NAME)
     connection_parameters = {
         "account": snowflake_secrets['SNOWFLAKE_ACCOUNT'],
@@ -31,13 +31,17 @@ def get_last_variant_update():
     query = f'''
         SELECT UPDATE_TS AS LAST_MODIFIED
         FROM JDX_PLATFORM.ANALYTICS.SHOPIFY_B2B_PRODUCTS
+        WHERE ENV = '{shop_env}'
         ORDER BY UPDATE_TS DESC
         LIMIT 1
     '''
     try:
         df = session.create_dataframe(session.sql(query).collect()).to_pandas()
-        last_modified_time = datetime.strptime(df['LAST_MODIFIED'][0], '%Y-%m-%d %H:%M:%S.%f')
-        logger.info(f'Shopify B2B products were last modified at {last_modified_time}')
+        if len(df)>0:
+            last_modified_time = datetime.strptime(df['LAST_MODIFIED'][0], '%Y-%m-%d %H:%M:%S.%f')
+            logger.info(f'Shopify B2B products were last modified at {last_modified_time}')
+        else:
+            last_modified_time = -1
     except snowflake.snowpark.exceptions.SnowparkSQLException:
         last_modified_time = -1
     return last_modified_time
@@ -145,9 +149,8 @@ def main():
     # get latest price information from Snowflake
     price_df = get_latest_prices()
     last_price_update = datetime.strptime(price_df['update_ts'][0], '%Y-%m-%d %H:%M:%S.%f')
-    last_variant_update = get_last_variant_update()
-
     shopify_helper = ShopifyHelper(SHOPIFY_SECRET_NAME)
+    last_variant_update = get_last_variant_update(shopify_helper.shop_env)
 
     if last_variant_update==-1 or last_price_update>last_variant_update:  # there is a price update
         # Update FST B2B product
