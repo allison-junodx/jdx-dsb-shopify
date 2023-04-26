@@ -35,9 +35,11 @@ def get_last_variant_update(shop_env):
         ORDER BY UPDATE_TS DESC
         LIMIT 1
     '''
+
     try:
-        df = session.create_dataframe(session.sql(query).collect()).to_pandas()
-        if len(df)>0:
+        data = session.sql(query).collect()
+        if len(data)>0:
+            df = session.create_dataframe(data).to_pandas()
             last_modified_time = datetime.strptime(df['LAST_MODIFIED'][0], '%Y-%m-%d %H:%M:%S.%f')
             logger.info(f'Shopify B2B products were last modified at {last_modified_time}')
         else:
