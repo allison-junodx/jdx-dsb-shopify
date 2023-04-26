@@ -36,7 +36,7 @@ handlers:
 # to specific modules. The names of the import must match the key
 # name under loggers 
 loggers:
-    jdx_dsb_shopify.scripts.predict:
+    jdx_dsb_shopify.scripts.manage_b2b_products.py:
         level: INFO
         handlers: [console, info_file_handler, error_file_handler]
         propagate: no

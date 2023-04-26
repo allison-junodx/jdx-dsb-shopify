@@ -126,6 +126,7 @@ def update_product_pricing(
                 status='active',
                 product_short_name=product_short_name,
             )
+            logger.debug(response)
             shopify_helper.delete_product(b2b_product[0]['id'])
             update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']))
             return response
@@ -136,7 +137,7 @@ def update_product_pricing(
                 status = 'active',
                 product_short_name = product_short_name,
             )
-
+            logger.debug(response)
             update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']))
             return response
     else:
