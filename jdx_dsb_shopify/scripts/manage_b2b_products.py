@@ -1,9 +1,7 @@
 import logging
-
-import click
-import pandas as pd
 from datetime import datetime
 
+import pandas as pd
 import snowflake
 from jdx_utils.api.secrets import get_secret_from_sm
 from jdx_utils.util import log_start_stop, log_runtime
