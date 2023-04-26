@@ -3,6 +3,8 @@ import logging
 import click
 import pandas as pd
 from datetime import datetime
+
+import snowflake
 from jdx_utils.api.secrets import get_secret_from_sm
 from jdx_utils.util import log_start_stop, log_runtime
 from snowflake.snowpark import Session
@@ -32,9 +34,12 @@ def get_last_variant_update():
         ORDER BY UPDATE_TS DESC
         LIMIT 1
     '''
-    df = session.create_dataframe(session.sql(query).collect()).to_pandas()
-    last_modified_time = datetime.strptime(df['LAST_MODIFIED'][0], '%Y-%m-%d %H:%M:%S.%f')
-    logger.info(f'Shopify B2B products were last modified at {last_modified_time}')
+    try:
+        df = session.create_dataframe(session.sql(query).collect()).to_pandas()
+        last_modified_time = datetime.strptime(df['LAST_MODIFIED'][0], '%Y-%m-%d %H:%M:%S.%f')
+        logger.info(f'Shopify B2B products were last modified at {last_modified_time}')
+    except snowflake.snowpark.exceptions.SnowparkSQLException:
+        last_modified_time = -1
     return last_modified_time
 
 
@@ -144,7 +149,7 @@ def main():
 
     shopify_helper = ShopifyHelper(SHOPIFY_SECRET_NAME)
 
-    if last_price_update>last_variant_update:  # there is a price update
+    if last_variant_update==-1 or last_price_update>last_variant_update:  # there is a price update
         # Update FST B2B product
         logger.info('UPDATE: FST B2B Product')
         update_product_pricing(
