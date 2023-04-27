@@ -5,6 +5,16 @@
 jdx-utils==1.1.1
 slack_bolt==1.16.2
 slack_sdk==3.20.0
-jdx-slack-bot==0.2.0
+jdx-slack-bot==0.2.1
 snowflake-snowpark-python==1.2.0
 pyarrow==10.0.1
+thefuzz==0.19.0
+python-Levenshtein==0.21.0
+google-api-core==2.11.0
+google-api-python-client==2.79.0
+google-auth==2.16.1
+google-auth-httplib2==0.1.0
+google-auth-oauthlib==1.0.0
+googleapis-common-protos==1.58.0
+gspread==5.7.2
+gspread-pandas==3.2.2

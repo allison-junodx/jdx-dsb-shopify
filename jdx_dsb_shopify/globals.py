@@ -1,5 +1,7 @@
 import os
 
+from jdx_utils.api.secrets import get_secret_from_sm
+
 shopify_secret_name = {
     'dev': 'dsb-shopify-dev2-secret',
     'beta': 'dsb-shopify-beta-secrets',
@@ -31,3 +33,21 @@ JOTFORM_SECRET_NAME = 'dsb-jotform-api-key'
 JOTFORM_ID_REDRAW ='231075275142955'
 JOTFORM_ID_HAZEL = '231069003892959'
 JOTFORM_ID_BIRCH = '231068067067962'
+
+# Google Sheet
+GOOGLE_API_SECRET_NAME = 'dsb-ingestion-bot-key'
+INVENTORY_SHEET_ID = '1-TTSt61uvWsVNI93boGyijqAWVcwzd_B4MfSA6u4_sA'
+ORDER_CREATION_SHEET_ID = '1pP7oib65GRye7VXOt06xO5S17oA9tP0ixDP2Jt43q_o'
+
+# Slack
+slack_secret_mapping = {
+    'dev': 'dsb-slack-api-token-test',
+    'prd': 'dsb-slack-api-token'
+}
+
+SLACK_BOT_SECRET_NAME = slack_secret_mapping[os.environ['ENV']]
+
+# Get slack secrets
+slack_secrets = get_secret_from_sm(SLACK_BOT_SECRET_NAME)
+SLACK_BOT_TOKEN = slack_secrets['SLACK_BOT_TOKEN']
+SLACK_APP_TOKEN = slack_secrets['SLACK_APP_TOKEN']
