@@ -242,8 +242,8 @@ def jotform2shopify():
 
     if len(new_orders)>0:
         logger.info('Found {} orders to ')
-        new_orders['account_name_sku'] = new_orders['account_name'] + '|' + new_orders['product_sku']
-        variant_df['account_name_sku'] = variant_df['account_name'] + '|' + variant_df['sku']
+        new_orders['account_name_sku'] = new_orders['account_name'] + '|' + new_orders['product_short_name']
+        variant_df['account_name_sku'] = variant_df['account_name'] + '|' + variant_df['product_short_name']
         fuzzy_matched_df = fuzzy_merge(
             new_orders, variant_df[['account_name_sku', 'id', 'product_id', 'price']],
             'account_name_sku', 'account_name_sku',
