@@ -50,6 +50,7 @@ def get_last_variant_update(shop_env):
 @log_start_stop
 def update_snowflake_shopify_b2b_products(
         df,
+        product_short_name: str,
         dst_table_name: str = 'SHOPIFY_B2B_PRODUCTS',
         mode: str = 'append',
 ):
@@ -69,6 +70,7 @@ def update_snowflake_shopify_b2b_products(
     logger.info(f"Updating {full_dst_table_name} with {mode} mode...")
     df['update_ts'] = str(datetime.now())
     df['env']=get_secret_from_sm(SHOPIFY_SECRET_NAME)['SHOP_ENV']
+    df['product_short_name'] = product_short_name
     df.columns = [c.upper() for c in df.columns]
     sf_df = session.create_dataframe(df)
     sf_df.write.save_as_table(dst_table_name, mode=mode)
@@ -126,7 +128,8 @@ def update_product_pricing(
             )
             logger.debug(response)
             shopify_helper.delete_product(b2b_product[0]['id'])
-            update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']))
+            update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']),
+                                                  product_short_name=product_short_name)
             return response
 
         else: # create product
