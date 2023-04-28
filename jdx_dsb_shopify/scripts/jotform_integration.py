@@ -238,7 +238,7 @@ def jotform2shopify():
     variant_df=get_latest_product_variant_info(shop_env)
 
     # Find orders to be created
-    new_orders = total_form_info_df.query('lab_portal_order_number.isna()')
+    new_orders = total_form_info_df.query('lab_portal_order_number.isna()').copy()
 
     if len(new_orders)>0:
         logger.info(f'Found {len(new_orders)} orders to create.')
@@ -249,7 +249,19 @@ def jotform2shopify():
             'account_name_sku', 'account_name_sku',
             threshold=90,
             how='left'
-        )
+        ).rename(columns={'id':'variant_id'})
+        fuzzy_matched_df_cols = [
+            'account_name',
+            'first_name',
+            'last_name',
+            'patientsEmail',
+            'dob',
+            'lmp',
+            'product_short_name',
+            'product_id',
+            'variant_id'
+        ]
+
         shopify_order_names=list()
         shopify_order_ids = list()
         for order in fuzzy_matched_df.iterrows():
@@ -291,9 +303,10 @@ def jotform2shopify():
 
         shopify_order_created = pd.concat(
             [
-                fuzzy_matched_df,
+                fuzzy_matched_df[fuzzy_matched_df_cols],
                 pd.DataFrame(shopify_order_names, columns=['order_name']),
-                pd.DataFrame(shopify_order_ids, columns=['order_id'])]
+                pd.DataFrame(shopify_order_ids, columns=['order_id'])
+            ], axis=1
         )
 
         # get inventory information
@@ -317,7 +330,6 @@ def jotform2shopify():
 
         shopify_order_created = shopify_order_created.merge(inventory_df, on='kit_code', how='left')
         update_cols = [
-            'order_id',
             'order_name',
             'first_name',
             'last_name',
