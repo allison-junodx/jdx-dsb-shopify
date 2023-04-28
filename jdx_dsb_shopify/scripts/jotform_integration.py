@@ -221,12 +221,12 @@ def jotform2shopify():
     for c in ('first_name', 'last_name', 'account_name', 'kit_code'):
         total_form_info_df[c] = total_form_info_df[c].astype(str).apply(lambda x: x.upper().strip())
 
-    total_form_info_df = (
-        total_form_info_df
-            .query('account_name!="TEST"')
-            .query('last_name!="TEST"')
-            .query('first_name!="TEST"')
-    )
+    # total_form_info_df = (
+    #     total_form_info_df
+    #         .query('account_name!="TEST"')
+    #         .query('last_name!="TEST"')
+    #         .query('first_name!="TEST"')
+    # )
 
     # remove orders that are already synced by matching kitcode in platform database
     order_df = get_recent_order_df(limit=1000)
