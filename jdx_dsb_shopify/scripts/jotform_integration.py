@@ -1,18 +1,16 @@
 import logging
 import os
-from collections import namedtuple
-from datetime import datetime
 
 import pandas as pd
-import snowflake
 from google.oauth2.service_account import Credentials
+from jdx_slack_bot.util.google_drive_util import append_df2gsheet, get_spreadsheet
 from jdx_utils.api.secrets import get_secret_from_sm, get_google_api_creds
 from jdx_utils.util import log_start_stop, log_runtime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
 from snowflake.snowpark import Session
-from googleapiclient.discovery import build
-from jdx_dsb_shopify.globals import SNOWFLAKE_SECRET_NAME, SNOWFLAKE_WH, SHOPIFY_SECRET_NAME, JOTFORM_SECRET_NAME, \
+
+from jdx_dsb_shopify.globals import SNOWFLAKE_SECRET_NAME, SHOPIFY_SECRET_NAME, JOTFORM_SECRET_NAME, \
     JOTFORM_ID_HAZEL, JOTFORM_ID_BIRCH, INVENTORY_SHEET_ID, GOOGLE_API_SECRET_NAME, ORDER_CREATION_SHEET_ID, \
     SLACK_BOT_TOKEN
 from jdx_dsb_shopify.util.jotform_utils import JotformAPIClient, parse_form_names, parse_form_dates
@@ -20,7 +18,6 @@ from jdx_dsb_shopify.util.logging import setup_logging_env
 from jdx_dsb_shopify.util.platform_db_utils import get_platformdb_conn_str
 from jdx_dsb_shopify.util.shopify_utils import ShopifyHelper
 from jdx_dsb_shopify.util.util import fuzzy_merge
-from jdx_slack_bot.util.google_drive_util import append_df2gsheet, get_spreadsheet
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +80,7 @@ def all_orders_from_jotform():
     }
     form_infos = list()
     for k, form_id in form_id_dict.items():
-        form_info = pull_orders_from_jotform(form_id=form_id, cols=cols, form_statuses=['ACTIVE', 'ARCHIVED'])
+        form_info = pull_orders_from_jotform(form_id=form_id, cols=cols, form_statuses=['ACTIVE', 'ARCHIVED', 'CUSTOM'])
         if form_info is not None:
             form_info[['first_name', 'last_name']] = (
                 form_info['patientsName']
