@@ -253,12 +253,12 @@ def jotform2shopify():
         shopify_order_names=list()
         shopify_order_ids = list()
         for order in fuzzy_matched_df.iterrows():
-            account_name = order[0]['account_name']
-            first_name = standardize_name(order[0]['first_name'])
-            last_name = standardize_name(order[0]['last_name'])
-            email = order[0]['patientsEmail']
-            variant_id = order[0]['id']
-            product_id = order[0]['product_id']
+            account_name = order[1]['account_name']
+            first_name = standardize_name(order[1]['first_name'])
+            last_name = standardize_name(order[1]['last_name'])
+            email = order[1]['patientsEmail']
+            variant_id = order[1]['id']
+            product_id = order[1]['product_id']
             account_address = {
                 "first_name": first_name,
                 "last_name": last_name,
