@@ -313,7 +313,7 @@ def jotform2shopify():
         # get inventory information
         inventory_df = get_spreadsheet(INVENTORY_SHEET_ID, range='Providers', creds=google_creds)[
             [
-                'kit_code',
+                'Kit_Code',
                 'Device_ID',
                 'ReturnShipping',
                 'ExpDate'
@@ -321,7 +321,7 @@ def jotform2shopify():
         ]
 
         inventory_df = inventory_df.rename(columns={
-            'kit_code': 'kit_code',
+            'Kit_Code': 'kit_code',
             'Device_ID':'sample_number',
             'ReturnShipping': 'return_tracking_number',
             'ExpDate': 'expiration_date'
