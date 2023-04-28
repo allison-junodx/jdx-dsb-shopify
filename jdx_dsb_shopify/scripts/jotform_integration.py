@@ -241,7 +241,7 @@ def jotform2shopify():
     new_orders = total_form_info_df.query('lab_portal_order_number.isna()')
 
     if len(new_orders)>0:
-        logger.info('Found {} orders to ')
+        logger.info(f'Found {len(new_orders)} orders to create.')
         new_orders['account_name_sku'] = new_orders['account_name'] + '|' + new_orders['product_short_name']
         variant_df['account_name_sku'] = variant_df['account_name'] + '|' + variant_df['product_short_name']
         fuzzy_matched_df = fuzzy_merge(
@@ -290,8 +290,10 @@ def jotform2shopify():
                 shopify_order_ids.append('')
 
         shopify_order_created = pd.concat(
-            [fuzzy_matched_df, pd.DataFrame(shopify_order_names), pd.DataFrame(
-            shopify_order_ids)]
+            [
+                fuzzy_matched_df,
+                pd.DataFrame(shopify_order_names, columns=['order_name']),
+                pd.DataFrame(shopify_order_ids, columns=['order_id'])]
         )
 
         # get inventory information
@@ -313,8 +315,21 @@ def jotform2shopify():
 
         inventory_df['kit_code'] = inventory_df['kit_code'].apply(lambda x: x.upper())
 
-        shopify_order_created = shopify_order_created.merge(inventory_df, on='kit_code')
-        response = append_df2gsheet(shopify_order_created, google_creds, ORDER_CREATION_SHEET_ID)
+        shopify_order_created = shopify_order_created.merge(inventory_df, on='kit_code', how='left')
+        update_cols = [
+            'order_id',
+            'order_name',
+            'first_name',
+            'last_name',
+            'patientsEmail',
+            'dob',
+            'lmp'
+            'kit_code',
+            'sample_number',
+            'return_tracking_number',
+            'expiration_date',
+        ]
+        response = append_df2gsheet(shopify_order_created[update_cols], google_creds, ORDER_CREATION_SHEET_ID)
         logger.info('Updated order creation report on Google drive:')
         logger.info(response)
 
