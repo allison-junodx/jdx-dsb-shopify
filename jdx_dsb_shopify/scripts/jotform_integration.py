@@ -5,7 +5,7 @@ from datetime import datetime
 
 import pandas as pd
 import snowflake
-from google.auth.credentials import Credentials
+from google.oauth2.service_account import Credentials
 from jdx_utils.api.secrets import get_secret_from_sm, get_google_api_creds
 from jdx_utils.util import log_start_stop, log_runtime
 from slack_sdk import WebClient
