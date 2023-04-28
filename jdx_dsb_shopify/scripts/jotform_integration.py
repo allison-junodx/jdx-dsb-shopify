@@ -259,7 +259,8 @@ def jotform2shopify():
             'lmp',
             'product_short_name',
             'product_id',
-            'variant_id'
+            'variant_id',
+            'kit_code'
         ]
 
         shopify_order_names=list()
