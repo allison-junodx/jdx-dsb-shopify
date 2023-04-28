@@ -323,7 +323,7 @@ def jotform2shopify():
             'last_name',
             'patientsEmail',
             'dob',
-            'lmp'
+            'lmp',
             'kit_code',
             'sample_number',
             'return_tracking_number',
