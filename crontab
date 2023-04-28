@@ -1,0 +1,2 @@
+00 16 * * * TZ='America/Los_Angeles' docker exec jdx_dsb_shopify_prd python /mnt/jdx_dsb_shopify/scripts/manage_b2b_products.py
+30 16 * * * TZ='America/Los_Angeles' docker exec jdx_dsb_shopify_prd python /mnt/jdx_dsb_shopify/scripts/jotform_integration.py
