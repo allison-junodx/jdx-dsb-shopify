@@ -83,7 +83,7 @@ def all_orders_from_jotform():
     }
     form_infos = list()
     for k, form_id in form_id_dict.items():
-        form_info = pull_orders_from_jotform(form_id=form_id, cols=cols, form_statuses=['ACTIVE'])
+        form_info = pull_orders_from_jotform(form_id=form_id, cols=cols, form_statuses=['ACTIVE', 'ARCHIVED'])
         if form_info is not None:
             form_info[['first_name', 'last_name']] = (
                 form_info['patientsName']
@@ -99,9 +99,11 @@ def all_orders_from_jotform():
         else:
             print(f'No new orders found for {k} products.')
 
-    total_from_info_df = pd.concat(form_infos)
-
-    return total_from_info_df
+    if len(form_infos)>0:
+        total_from_info_df = pd.concat(form_infos)
+        return total_from_info_df
+    else:
+        return None
 
 
 def get_recent_order_df(limit=1000):
