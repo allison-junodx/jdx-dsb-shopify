@@ -269,7 +269,7 @@ def jotform2shopify():
             first_name = standardize_name(order[1]['first_name'])
             last_name = standardize_name(order[1]['last_name'])
             email = order[1]['patientsEmail']
-            variant_id = order[1]['id']
+            variant_id = order[1]['variant_id']
             product_id = order[1]['product_id']
             account_address = {
                 "first_name": first_name,
