@@ -50,6 +50,7 @@ def pull_orders_from_jotform(
         form_answers = form_df.query('name.isin(@cols)')[['name','answer']].T
         form_answers.columns = form_answers.iloc[0,:]
         form_answers = form_answers.iloc[1:]
+        form_df['created_at'] = form['created_at']
         form_infos.append(form_answers)
 
     logger.info(form_infos)
@@ -70,7 +71,8 @@ def all_orders_from_jotform():
         'patientsLmp',
         'imagingCenters',
         'patientsPhone',
-        'kitCode25'
+        'kitCode25',
+        'created_at',
     ]
 
     form_id_dict = {
@@ -111,6 +113,7 @@ def get_recent_order_df(limit=1000):
                 O.order_number as lab_portal_order_number, 
                 S.order_number AS shopify_order_id,
                 o.cancelled, 
+                u.email, 
                 L.product AS product_sku,
                 d.code AS kit_code
             FROM "order" AS O
@@ -221,16 +224,27 @@ def jotform2shopify():
     for c in ('first_name', 'last_name', 'account_name', 'kit_code'):
         total_form_info_df[c] = total_form_info_df[c].astype(str).apply(lambda x: x.upper().strip())
 
-    # total_form_info_df = (
-    #     total_form_info_df
-    #         .query('account_name!="TEST"')
-    #         .query('last_name!="TEST"')
-    #         .query('first_name!="TEST"')
-    # )
+    total_form_info_df = (
+        total_form_info_df
+            .query('account_name!="TEST"')
+            .query('last_name!="TEST"')
+            .query('first_name!="TEST"')
+    )
+    total_form_info_df['email'] = total_form_info_df['patientsEmail'].apply(lambda x: x.lower().strip())
 
     # remove orders that are already synced by matching kitcode in platform database
     order_df = get_recent_order_df(limit=1000)
-    total_form_info_df = total_form_info_df.merge(order_df, on=['kit_code'], how='left')
+    order_df['email'] = order_df['email'].apply(lambda x: x.lower().strip())
+    # match on kit code first
+    form_lp_order_df_1 = total_form_info_df[['email', 'kit_code']].merge(
+        order_df[['kit_code', 'lab_portal_order_number', 'shopify_order_id']],
+        on=['kit_code'], how='left').dropna().drop(columns=['kit_code'])
+    # match on emails first
+    form_lp_order_df_2 = total_form_info_df[['email']].merge(
+        order_df[['email', 'lab_portal_order_number', 'shopify_order_id']], on=['email'], how='left').dropna()
+
+    form_lp_order_df = pd.concat([form_lp_order_df_1, form_lp_order_df_2]).drop_duplicates()
+    total_form_info_df = total_form_info_df.merge(form_lp_order_df, on=['email'])
 
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
