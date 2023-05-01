@@ -342,7 +342,7 @@ def jotform2shopify():
             'return_tracking_number',
             'expiration_date',
         ]
-        response = append_df2gsheet(shopify_order_created[update_cols], google_creds, ORDER_CREATION_SHEET_ID)
+        response = append_df2gsheet(shopify_order_created[update_cols].fillna(''), google_creds, ORDER_CREATION_SHEET_ID)
         logger.info('Updated order creation report on Google drive:')
         logger.info(response)
 
