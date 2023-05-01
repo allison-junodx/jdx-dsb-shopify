@@ -64,11 +64,11 @@ def amazon_fba_shopify():
             how='left'
         ).rename(columns={'id': 'variant_id'})
         fuzzy_matched_df_cols = [
-            'order_name',
             'First Name',
             'Last Name',
             'Email',
-            'order_created_at',
+            'variant_id',
+            'product_id'
         ]
 
         shopify_order_names = list()
