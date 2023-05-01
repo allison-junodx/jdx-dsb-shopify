@@ -50,7 +50,7 @@ def pull_orders_from_jotform(
         form_answers = form_df.query('name.isin(@cols)')[['name','answer']].T
         form_answers.columns = form_answers.iloc[0,:]
         form_answers = form_answers.iloc[1:]
-        form_df['created_at'] = form['created_at']
+        form_answers['created_at'] = form['created_at']
         form_infos.append(form_answers)
 
     logger.info(form_infos)
@@ -140,6 +140,11 @@ def get_b2b_orders(
         account_address
 
 ):
+    if os.environ['ENV'] == 'dev':
+        test_flag = True
+    else:
+        test_flag = False
+
     return {
         "order": {
             "line_items": [
@@ -162,6 +167,7 @@ def get_b2b_orders(
             "financial_status": "paid",
             "send_receipt": False,
             "send_fulfillment_receipt": False,
+            'test': test_flag,
         }
     }
 
@@ -217,6 +223,8 @@ def jotform2shopify():
             .rename(columns={
             'kitCode25': 'kit_code',
             'imagingCenters':'account_name',
+            'created_at': 'order_submitted_at',
+            'patientsEmail': 'email',
         })
     )
 
@@ -230,7 +238,7 @@ def jotform2shopify():
             .query('last_name!="TEST"')
             .query('first_name!="TEST"')
     )
-    total_form_info_df['email'] = total_form_info_df['patientsEmail'].apply(lambda x: x.lower().strip())
+    total_form_info_df['email'] = total_form_info_df['email'].apply(lambda x: x.lower().strip())
 
     # remove orders that are already synced by matching kitcode in platform database
     order_df = get_recent_order_df(limit=1000)
@@ -268,13 +276,14 @@ def jotform2shopify():
             'account_name',
             'first_name',
             'last_name',
-            'patientsEmail',
+            'email',
             'dob',
             'lmp',
             'product_short_name',
             'product_id',
             'variant_id',
-            'kit_code'
+            'kit_code',
+            'order_submitted_at',
         ]
 
         shopify_order_names=list()
@@ -283,7 +292,7 @@ def jotform2shopify():
             account_name = order[1]['account_name']
             first_name = standardize_name(order[1]['first_name'])
             last_name = standardize_name(order[1]['last_name'])
-            email = order[1]['patientsEmail']
+            email = order[1]['email']
             variant_id = order[1]['variant_id']
             product_id = order[1]['product_id']
             account_address = {
@@ -348,13 +357,14 @@ def jotform2shopify():
             'order_name',
             'first_name',
             'last_name',
-            'patientsEmail',
+            'email',
             'dob',
             'lmp',
             'kit_code',
             'sample_number',
             'return_tracking_number',
             'expiration_date',
+            'order_submitted_at',
         ]
         response = append_df2gsheet(shopify_order_created[update_cols].fillna(''), google_creds, ORDER_CREATION_SHEET_ID)
         logger.info('Updated order creation report on Google drive:')
