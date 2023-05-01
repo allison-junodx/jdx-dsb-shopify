@@ -152,7 +152,7 @@ def update_product_pricing(
 def main():
     # get latest price information from Snowflake
     price_df = get_latest_prices()
-    last_price_update = datetime.strptime(price_df['update_ts'][0], '%Y-%m-%d %H:%M:%S.%f')
+    last_price_update = datetime.strptime(price_df['update_ts'].to_list()[0], '%Y-%m-%d %H:%M:%S.%f')
     shopify_helper = ShopifyHelper(SHOPIFY_SECRET_NAME)
     last_variant_update = get_last_variant_update(shopify_helper.shop_env)
 

@@ -11,6 +11,7 @@ shopify_secret_name = {
 SHOPIFY_SECRET_NAME = shopify_secret_name[os.environ['ENV']]
 
 # product details
+FST_PRODUCT_ID='7788774621433'
 FST_SKU = '50875e49-4485-4405-b329-69877c13ee2d'
 FST_BARCODE = '196852085453'
 FST_LP = 89.00
@@ -38,6 +39,7 @@ JOTFORM_ID_BIRCH = '231068067067962'
 GOOGLE_API_SECRET_NAME = 'dsb-ingestion-bot-key'
 INVENTORY_SHEET_ID = '1-TTSt61uvWsVNI93boGyijqAWVcwzd_B4MfSA6u4_sA'
 ORDER_CREATION_SHEET_ID = '1pP7oib65GRye7VXOt06xO5S17oA9tP0ixDP2Jt43q_o'
+AMAZON_FBA_USER_SHEET_ID = '1JgoRadxvhUM9beOO4voGpPpucfX8SHT7ettjBShB9-4'
 
 # Slack
 slack_secret_mapping = {
