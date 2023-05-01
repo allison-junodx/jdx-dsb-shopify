@@ -49,7 +49,7 @@ def amazon_fba_shopify():
 
     # create order based on amazon FBA user creation sheet
     # Only create order if STATUS='REGISTERED'
-    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"').head(2)
+    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"').iloc[0:5,:]
     new_orders['account_name'] = 'Amazon FBA'
     new_orders['product_short_name'] = 'birch'
 
@@ -136,7 +136,12 @@ def amazon_fba_shopify():
             'Email',
             'order_created_at',
         ]
-        response = append_df2gsheet(shopify_order_created[update_cols].fillna(''), google_creds, ORDER_CREATION_SHEET_ID)
+        response = append_df2gsheet(
+            shopify_order_created[update_cols].fillna(''),
+            google_creds,
+            ORDER_CREATION_SHEET_ID,
+            sheet_name='Shopify FBA Orders',
+        )
         logger.info('Updated order creation report on Google drive:')
         logger.info(response)
 
@@ -147,13 +152,11 @@ def amazon_fba_shopify():
             'prd': '#cs-x-dsb',
         }
 
-        info_msg = f'I have created {len(shopify_order_created)} orders from Jotform to Shopify. \n'
+        info_msg = f'I have created {len(shopify_order_created)} Amazon FBA orders in Shopify. \n'
         review_msg = f'Please review the google sheet along with additional information you need to update lab ' \
-                     f'portal orders later on at https://docs.google.com/spreadsheets/d/{ORDER_CREATION_SHEET_ID}. \n'''
-        update_msg = 'Once orders are synced over to the lab portal, please update the following information in lab ' \
-                     'portal: kit_code, tracking_number, patient DoB, patient LMP, and patient chart. \n'
+                     f'portal orders later on at https://docs.google.com/spreadsheets/d/{AMAZON_FBA_USER_SHEET_ID}. \n'''
 
-        msg = info_msg + review_msg + update_msg
+        msg = info_msg + review_msg
         try:
             result = client.chat_postMessage(
                 channel=slack_channel_map[os.environ['ENV']],
