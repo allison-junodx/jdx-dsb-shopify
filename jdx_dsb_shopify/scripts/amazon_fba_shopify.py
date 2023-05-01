@@ -49,7 +49,7 @@ def amazon_fba_shopify():
 
     # create order based on amazon FBA user creation sheet
     # Only create order if STATUS='REGISTERED'
-    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"').iloc[0:5,:]
+    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"').iloc[5:,:]
     new_orders['account_name'] = 'Amazon FBA'
     new_orders['product_short_name'] = 'birch'
 
@@ -64,17 +64,11 @@ def amazon_fba_shopify():
             how='left'
         ).rename(columns={'id': 'variant_id'})
         fuzzy_matched_df_cols = [
-            'account_name',
-            'first_name',
-            'last_name',
-            'email',
-            'dob',
-            'lmp',
-            'product_short_name',
-            'product_id',
-            'variant_id',
-            'kit_code',
-            'order_submitted_at',
+            'order_name',
+            'First Name',
+            'Last Name',
+            'Email',
+            'order_created_at',
         ]
 
         shopify_order_names = list()
