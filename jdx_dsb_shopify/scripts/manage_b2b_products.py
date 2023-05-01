@@ -139,7 +139,8 @@ def update_product_pricing(
                 product_short_name = product_short_name,
             )
             logger.debug(response)
-            update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']))
+            update_snowflake_shopify_b2b_products(pd.DataFrame(response.json()['product']['variants']),
+                                                  product_short_name=product_short_name)
             return response
     else:
         logger.info('No product variants to update.')
