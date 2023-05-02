@@ -130,7 +130,8 @@ def get_recent_order_df(limit=1000):
 
     order_df = pd.read_sql_query(query, con=conn_str)
     return order_df
-
+#45069220774161
+#8339256574225
 def get_b2b_orders(
         variant_id,
         product_id,
