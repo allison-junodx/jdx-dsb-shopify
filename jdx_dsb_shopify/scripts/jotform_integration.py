@@ -162,7 +162,6 @@ def get_b2b_orders(
             },
             "email": email,
             "phone": "858-201-7154",
-            "tags": "Sync: Failed,",
             "billing_address": account_address,
             "shipping_address": account_address,
             "financial_status": "paid",
@@ -253,7 +252,7 @@ def jotform2shopify():
         order_df[['email', 'lab_portal_order_number', 'shopify_order_id']], on=['email'], how='left').dropna()
 
     form_lp_order_df = pd.concat([form_lp_order_df_1, form_lp_order_df_2]).drop_duplicates()
-    total_form_info_df = total_form_info_df.merge(form_lp_order_df, on=['email'])
+    total_form_info_df = total_form_info_df.merge(form_lp_order_df, on=['email'], how='left')
 
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
