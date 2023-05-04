@@ -164,6 +164,7 @@ def get_b2b_orders(
             },
             "email": email,
             "phone": "858-201-7154",
+            "tags": "Sync: Failed",
             "billing_address": account_address,
             "shipping_address": account_address,
             "financial_status": "paid",
