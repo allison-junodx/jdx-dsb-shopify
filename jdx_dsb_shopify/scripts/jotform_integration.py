@@ -50,6 +50,7 @@ def pull_orders_from_jotform(
         form_answers = form_df.query('name.isin(@cols)')[['name','answer']].T
         form_answers.columns = form_answers.iloc[0,:]
         form_answers = form_answers.iloc[1:]
+        form_answers = form_answers.rename(columns={'kitCode43':'kit_code', 'kitCode25': 'kit_code'})
         form_answers['created_at'] = form['created_at']
         form_infos.append(form_answers)
 
@@ -72,6 +73,7 @@ def all_orders_from_jotform():
         'imagingCenters',
         'patientsPhone',
         'kitCode25',
+        'kitCode43',
         'created_at',
     ]
 
@@ -221,7 +223,6 @@ def jotform2shopify():
     total_form_info_df = (
         all_orders_from_jotform()
             .rename(columns={
-            'kitCode25': 'kit_code',
             'imagingCenters':'account_name',
             'created_at': 'order_submitted_at',
             'patientsEmail': 'email',
