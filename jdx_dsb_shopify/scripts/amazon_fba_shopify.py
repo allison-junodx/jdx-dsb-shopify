@@ -44,8 +44,9 @@ def amazon_fba_shopify(start_user_number=None):
         creds=google_creds,
     )
 
+    total_amazon_fba_orders['User Number'] = total_amazon_fba_orders['User Number'].astype(int)
     if start_user_number is not None:
-        total_amazon_fba_orders = total_amazon_fba_orders.query(f'`User Number`>={start_user_number}')
+        total_amazon_fba_orders = total_amazon_fba_orders.query(f'`User Number`>={int(start_user_number)}')
 
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
