@@ -91,4 +91,5 @@ manage_b2b_products:
 	docker exec jdx_dsb_shopify_$(ENV) python /mnt/jdx_dsb_shopify/scripts/manage_b2b_products.py
 
 amazon_fba_shopify_orders:
-	docker exec jdx_dsb_shopify_$(ENV) python /mnt/jdx_dsb_shopify/scripts/amazon_fba_shopify.py
+	docker exec jdx_dsb_shopify_$(ENV) python /mnt/jdx_dsb_shopify/scripts/amazon_fba_shopify.py \
+	--start_user_number=$(START_USER)
