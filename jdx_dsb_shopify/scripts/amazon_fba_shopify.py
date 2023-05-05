@@ -33,7 +33,6 @@ google_creds = Credentials.from_service_account_info(creds, scopes=scopes)
 
 @log_start_stop
 @log_runtime
-@setup_logging_env
 @click.command()
 @click.option("--start_user_number", default=None, help="start_user_number")
 def amazon_fba_shopify(start_user_number=None):
