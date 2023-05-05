@@ -1,6 +1,7 @@
 import logging
 import os
 
+import click
 import pandas as pd
 from google.oauth2.service_account import Credentials
 from jdx_slack_bot.util.google_drive_util import append_df2gsheet, get_spreadsheet
@@ -33,7 +34,9 @@ google_creds = Credentials.from_service_account_info(creds, scopes=scopes)
 @log_start_stop
 @log_runtime
 @setup_logging_env
-def amazon_fba_shopify():
+@click.command()
+@click.option("--start_user_number", default=None, help="start_user_number")
+def amazon_fba_shopify(start_user_number=None):
     shopify_helper = ShopifyHelper(SHOPIFY_SECRET_NAME)
     # get Amazon FBA orders from Google Sheet
     total_amazon_fba_orders = get_spreadsheet(
@@ -41,6 +44,9 @@ def amazon_fba_shopify():
         range='Sheet1',
         creds=google_creds,
     )
+
+    if start_user_number is not None:
+        total_amazon_fba_orders = total_amazon_fba_orders.query(f'`User Number`>={start_user_number}')
 
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
