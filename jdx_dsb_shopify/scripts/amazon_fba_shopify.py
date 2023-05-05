@@ -55,7 +55,7 @@ def amazon_fba_shopify(start_user_number=None):
 
     # create order based on amazon FBA user creation sheet
     # Only create order if STATUS='REGISTERED'
-    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"').iloc[5:,:]
+    new_orders = total_amazon_fba_orders.query('Status=="REGISTERED"')
     new_orders['account_name'] = 'Amazon FBA'
     new_orders['product_short_name'] = 'birch'
 
