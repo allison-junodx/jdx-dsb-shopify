@@ -171,7 +171,7 @@ def amazon_fba_shopify(start_user_number=None):
         # Send slack notification and update
 
     else:
-        logger.info('No new Jotform orders found.')
+        logger.info('No new Amazon FBA orders created.')
 
 
 
