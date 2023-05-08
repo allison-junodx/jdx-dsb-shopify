@@ -28,6 +28,12 @@ scopes = [
 ]
 google_creds = Credentials.from_service_account_info(creds, scopes=scopes)
 
+def parse_hazel_product(x):
+    if 'plus' in x.lower():
+        return 'hazel_plus'
+    else:
+        return 'hazel_basic'
+
 def pull_orders_from_jotform(
         form_id,
         cols: list,
@@ -75,11 +81,12 @@ def all_orders_from_jotform():
         'kitCode25',
         'kitCode43',
         'created_at',
+        'hazelTest'
     ]
 
     form_id_dict = {
         'birch': JOTFORM_ID_BIRCH,
-        'hazel_basic': JOTFORM_ID_HAZEL,
+        'hazel': JOTFORM_ID_HAZEL,
         # 'hazel_plus': JOTFORM_ID_HAZEL,
     }
     form_infos = list()
@@ -95,7 +102,8 @@ def all_orders_from_jotform():
             form_info['dob'] = form_info['patientsDob'].apply(lambda x: parse_form_dates(x))
             form_info['lmp'] = form_info['patientsLmp'].apply(lambda x: parse_form_dates(x))
 
-            form_info['product_short_name'] = k
+            if k == 'hazel':
+                form_info['product_short_name'] = form_info['hazelTest'].apply(lambda x: parse_hazel_product(x))
             form_infos.append(form_info)
         else:
             print(f'No new orders found for {k} products.')
