@@ -35,7 +35,11 @@ google_creds = Credentials.from_service_account_info(creds, scopes=scopes)
 @log_runtime
 @click.command()
 @click.option("--start_user_number", default=None, help="start_user_number")
-def amazon_fba_shopify(start_user_number=None):
+@click.option("--batch_size", default=None, help="batch size")
+def amazon_fba_shopify(
+        start_user_number: int =None,
+        batch_size: int =None
+):
     shopify_helper = ShopifyHelper(SHOPIFY_SECRET_NAME)
     # get Amazon FBA orders from Google Sheet
     total_amazon_fba_orders = get_spreadsheet(
@@ -48,6 +52,8 @@ def amazon_fba_shopify(start_user_number=None):
     if start_user_number is not None:
         total_amazon_fba_orders = total_amazon_fba_orders.query(f'`User Number`>={int(start_user_number)}')
 
+    if batch_size is not None:
+        total_amazon_fba_orders = total_amazon_fba_orders.sort_values('`User Number`', ascending=True).head(batch_size)
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
     shop_env = shopify_secrets['SHOP_ENV']
