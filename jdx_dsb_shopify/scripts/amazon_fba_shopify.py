@@ -53,6 +53,7 @@ def amazon_fba_shopify(
         total_amazon_fba_orders = total_amazon_fba_orders.query(f'`User Number`>={int(start_user_number)}')
 
     if batch_size is not None:
+        batch_size = int(batch_size)
         total_amazon_fba_orders = total_amazon_fba_orders.sort_values('User Number', ascending=True).head(batch_size)
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
