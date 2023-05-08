@@ -104,6 +104,8 @@ def all_orders_from_jotform():
 
             if k == 'hazel':
                 form_info['product_short_name'] = form_info['hazelTest'].apply(lambda x: parse_hazel_product(x))
+            else:
+                form_info['product_short_name'] = k
             form_infos.append(form_info)
         else:
             print(f'No new orders found for {k} products.')
