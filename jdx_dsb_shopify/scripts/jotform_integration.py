@@ -121,6 +121,7 @@ def get_recent_order_df(limit=1000):
     conn_str = get_platformdb_conn_str('dsb-platform-db-readonly')
     query = f'''
             SELECT 
+                O.ordered_at, 
                 O.id as order_id, 
                 O.order_number as lab_portal_order_number, 
                 S.order_number AS shopify_order_id,

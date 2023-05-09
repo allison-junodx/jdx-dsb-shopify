@@ -135,6 +135,8 @@ def amazon_fba_shopify(
             ], axis=1
         )
 
+        logger.info(shopify_order_created)
+
 
         update_cols = [
             'order_name',
