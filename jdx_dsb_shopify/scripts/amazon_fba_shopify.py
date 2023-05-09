@@ -135,7 +135,7 @@ def amazon_fba_shopify(
             ], axis=1
         )
 
-        logger.info(shopify_order_created)
+
 
 
         update_cols = [
@@ -145,6 +145,9 @@ def amazon_fba_shopify(
             'Email',
             'order_created_at',
         ]
+
+        logger.info(shopify_order_created[update_cols].fillna(''))
+
         response = append_df2gsheet(
             shopify_order_created[update_cols].fillna(''),
             google_creds,
