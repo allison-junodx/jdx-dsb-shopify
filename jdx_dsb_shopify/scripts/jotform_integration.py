@@ -300,6 +300,7 @@ def jotform2shopify():
     variant_df=get_latest_product_variant_info(shop_env)
 
     # Find orders to be created
+    logger.info(total_form_info_df_final.columns)
     new_orders = total_form_info_df_final.query('lab_portal_order_number.isna()').copy()
 
     if len(new_orders)>0:
