@@ -258,14 +258,41 @@ def jotform2shopify():
     order_df['email'] = order_df['email'].apply(lambda x: x.lower().strip())
     # match on kit code first
     form_lp_order_df_1 = total_form_info_df[['email', 'kit_code']].merge(
-        order_df[['kit_code', 'lab_portal_order_number', 'shopify_order_id']],
+        order_df[['ordered_at','kit_code', 'lab_portal_order_number', 'shopify_order_id']],
         on=['kit_code'], how='left').dropna().drop(columns=['kit_code'])
     # match on emails first
     form_lp_order_df_2 = total_form_info_df[['email']].merge(
-        order_df[['email', 'lab_portal_order_number', 'shopify_order_id']], on=['email'], how='left').dropna()
+        order_df[['ordered_at','email', 'lab_portal_order_number', 'shopify_order_id']], on=['email'],
+        how='left').dropna()
 
-    form_lp_order_df = pd.concat([form_lp_order_df_1, form_lp_order_df_2]).drop_duplicates()
-    total_form_info_df = total_form_info_df.merge(form_lp_order_df, on=['email'], how='left')
+    # form_lp_order_df = pd.concat([form_lp_order_df_1, form_lp_order_df_2]).drop_duplicates()
+    form_lp_order_df_resolved = (
+        form_lp_order_df_1.merge(
+            form_lp_order_df_2,
+            on=['lab_portal_order_number', 'email', 'ordered_at'],
+            how='outer')
+    )
+    form_lp_order_df_resolved['shopify_order_id'] = (
+        form_lp_order_df_resolved[['shopify_order_id_x', 'shopify_order_id_y']]
+            .bfill(axis=1).iloc[:, 0]
+    )
+    form_lp_order_df_resolved = (
+        form_lp_order_df_resolved.drop(columns=['shopify_order_id_x', 'shopify_order_id_y']).drop_duplicates()
+    )
+
+    total_form_info_df['order_date'] = pd.to_datetime(total_form_info_df['order_submitted_at']).dt.date
+    form_lp_order_df_resolved['order_date'] = pd.to_datetime(form_lp_order_df_resolved['ordered_at']).dt.date
+    matched_lab_portal_order = total_form_info_df.merge(form_lp_order_df_resolved, on=['email'], how='left')
+    matched_lab_portal_order['order_date_diff'] = (
+            matched_lab_portal_order['order_date_x'] - matched_lab_portal_order['order_date_y']
+    )
+    # only matched to the jotform orders that has the closest date
+    matched_lab_portal_order = matched_lab_portal_order.sort_values('order_date_diff').groupby(
+        'lab_portal_order_number').head(1)
+    total_form_info_df_final = total_form_info_df.merge(
+        matched_lab_portal_order[['email', 'order_submitted_at']],
+        on=['email', 'order_submitted_at'], how='left'
+    )
 
     # get latest variant information
     shopify_secrets = get_secret_from_sm(SHOPIFY_SECRET_NAME)
@@ -273,7 +300,7 @@ def jotform2shopify():
     variant_df=get_latest_product_variant_info(shop_env)
 
     # Find orders to be created
-    new_orders = total_form_info_df.query('lab_portal_order_number.isna()').copy()
+    new_orders = total_form_info_df_final.query('lab_portal_order_number.isna()').copy()
 
     if len(new_orders)>0:
         logger.info(f'Found {len(new_orders)} orders to create.')
