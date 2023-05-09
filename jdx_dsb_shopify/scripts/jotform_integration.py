@@ -290,7 +290,7 @@ def jotform2shopify():
     matched_lab_portal_order = matched_lab_portal_order.sort_values('order_date_diff').groupby(
         'lab_portal_order_number').head(1)
     total_form_info_df_final = total_form_info_df.merge(
-        matched_lab_portal_order[['email', 'order_submitted_at']],
+        matched_lab_portal_order[['email', 'order_submitted_at', 'lab_portal_order_number']],
         on=['email', 'order_submitted_at'], how='left'
     )
 
