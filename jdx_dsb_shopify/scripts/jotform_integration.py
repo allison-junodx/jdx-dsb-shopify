@@ -284,11 +284,10 @@ def jotform2shopify():
     form_lp_order_df_resolved['order_date'] = pd.to_datetime(form_lp_order_df_resolved['ordered_at']).dt.date
     matched_lab_portal_order = total_form_info_df.merge(form_lp_order_df_resolved, on=['email'], how='left')
     matched_lab_portal_order['order_date_diff'] = (
-            matched_lab_portal_order['order_date_x'] - matched_lab_portal_order['order_date_y']
+            abs(matched_lab_portal_order['order_date_x'] - matched_lab_portal_order['order_date_y'])
     )
     # only matched to the jotform orders that has the closest date
-    matched_lab_portal_order = matched_lab_portal_order.sort_values('order_date_diff').groupby(
-        'lab_portal_order_number').head(1)
+    matched_lab_portal_order = matched_lab_portal_order.sort_values(['order_submitted_at', 'order_date_diff']).groupby(['order_submitted_at']).head(1)
     total_form_info_df_final = total_form_info_df.merge(
         matched_lab_portal_order[['email', 'order_submitted_at', 'lab_portal_order_number']],
         on=['email', 'order_submitted_at'], how='left'
