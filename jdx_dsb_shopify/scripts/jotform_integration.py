@@ -259,7 +259,7 @@ def jotform2shopify():
     # match on kit code first
     form_lp_order_df_1 = total_form_info_df[['email', 'kit_code']].merge(
         order_df[['ordered_at','kit_code', 'lab_portal_order_number', 'shopify_order_id']],
-        on=['kit_code'], how='left').dropna().drop(columns=['kit_code'])
+        on=['kit_code'], how='left').dropna(subset=['lab_portal_order_number']).drop(columns=['kit_code'])
     # match on emails first
     form_lp_order_df_2 = total_form_info_df[['email']].merge(
         order_df[['ordered_at','email', 'lab_portal_order_number', 'shopify_order_id']], on=['email'],
@@ -271,7 +271,7 @@ def jotform2shopify():
             form_lp_order_df_2,
             on=['lab_portal_order_number', 'email', 'ordered_at'],
             how='outer')
-    )
+    ).drop_duplicates()
     form_lp_order_df_resolved['shopify_order_id'] = (
         form_lp_order_df_resolved[['shopify_order_id_x', 'shopify_order_id_y']]
             .bfill(axis=1).iloc[:, 0]
