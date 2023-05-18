@@ -254,7 +254,7 @@ def jotform2shopify():
     total_form_info_df['email'] = total_form_info_df['email'].apply(lambda x: x.lower().strip())
 
     # remove orders that are already synced by matching kitcode in platform database
-    order_df = get_recent_order_df(limit=1000)
+    order_df = get_recent_order_df(limit=10000)
     order_df['email'] = order_df['email'].apply(lambda x: x.lower().strip())
     # match on kit code first
     form_lp_order_df_1 = total_form_info_df[['email', 'kit_code']].merge(
@@ -300,7 +300,11 @@ def jotform2shopify():
 
     # Find orders to be created
     logger.info(total_form_info_df_final.columns)
-    new_orders = total_form_info_df_final.query('lab_portal_order_number.isna()').copy()
+    new_orders = (
+        total_form_info_df_final
+            .query(f'order_submitted_at>"{str(datetime.now() - timedelta(days=30))}"')
+            .query('lab_portal_order_number.isna()').copy()
+    )
 
     if len(new_orders)>0:
         logger.info(f'Found {len(new_orders)} orders to create.')
