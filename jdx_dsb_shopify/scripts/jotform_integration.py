@@ -18,6 +18,7 @@ from jdx_dsb_shopify.util.logging import setup_logging_env
 from jdx_dsb_shopify.util.platform_db_utils import get_platformdb_conn_str
 from jdx_dsb_shopify.util.shopify_utils import ShopifyHelper
 from jdx_dsb_shopify.util.util import fuzzy_merge
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
