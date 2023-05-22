@@ -147,7 +147,7 @@ def amazon_fba_shopify(
 
         response = append_df2gsheet(
             df=shopify_order_created[update_cols].fillna(''),
-            spreadsheet_id=ORDER_CREATION_SHEET_ID,
+            spreadsheet_id=AMAZON_FBA_USER_SHEET_ID,
         )
 
         logger.info('Updated order creation report on Google drive:')
