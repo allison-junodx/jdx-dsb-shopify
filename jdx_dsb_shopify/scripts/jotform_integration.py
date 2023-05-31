@@ -47,7 +47,7 @@ def pull_orders_from_jotform(
         logger.info(f'Looking for submissions with the following status: {",".join(form_statuses)}')
         selected_forms = [form for form in forms.json()['content'] if form['status'] in form_statuses]
     else:
-        selected_forms = forms.copy()
+        selected_forms = [form for form in forms.json()['content']]
 
     logger.info(f'Found {len(selected_forms)} active forms for form: {form_id}')
     form_infos = list()
