@@ -400,6 +400,7 @@ def jotform2shopify():
         shopify_order_created = shopify_order_created.merge(inventory_df, on='kit_code', how='left')
         update_cols = [
             'order_name',
+            'account_name',
             'first_name',
             'last_name',
             'email',
