@@ -148,7 +148,8 @@ def amazon_fba_shopify(
         response = append_df2gsheet(
             df=shopify_order_created[update_cols].fillna(''),
             spreadsheet_id=AMAZON_FBA_USER_SHEET_ID,
-            sheet_name='Orders'
+            sheet_name='Orders',
+            creds=google_creds,
         )
 
         logger.info('Updated order creation report on Google drive:')
@@ -162,8 +163,7 @@ def amazon_fba_shopify(
         }
 
         info_msg = f'I have created {len(shopify_order_created)} Amazon FBA orders in Shopify. \n'
-        review_msg = f'Please review the google sheet along with additional information you need to update lab ' \
-                     f'portal orders later on at https://docs.google.com/spreadsheets/d/{AMAZON_FBA_USER_SHEET_ID}. \n'''
+        review_msg = f'Please review the google sheet https://docs.google.com/spreadsheets/d/{AMAZON_FBA_USER_SHEET_ID}. \n'''
 
         msg = info_msg + review_msg
         try:
