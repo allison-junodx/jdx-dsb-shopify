@@ -9,15 +9,10 @@ from jdx_utils.api.secrets import get_secret_from_sm, get_google_api_creds
 from jdx_utils.util import log_start_stop, log_runtime
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from snowflake.snowpark import Session
 
-from jdx_dsb_shopify.globals import SNOWFLAKE_SECRET_NAME, SHOPIFY_SECRET_NAME, JOTFORM_SECRET_NAME, \
-    JOTFORM_ID_HAZEL, JOTFORM_ID_BIRCH, INVENTORY_SHEET_ID, GOOGLE_API_SECRET_NAME, ORDER_CREATION_SHEET_ID, \
-    SLACK_BOT_TOKEN, AMAZON_FBA_USER_SHEET_ID, FST_PRODUCT_ID
+from jdx_dsb_shopify.globals import SHOPIFY_SECRET_NAME, GOOGLE_API_SECRET_NAME, SLACK_BOT_TOKEN, \
+    AMAZON_FBA_USER_SHEET_ID
 from jdx_dsb_shopify.scripts.jotform_integration import get_b2b_orders, get_latest_product_variant_info
-from jdx_dsb_shopify.util.jotform_utils import JotformAPIClient, parse_form_names, parse_form_dates
-from jdx_dsb_shopify.util.logging import setup_logging_env
-from jdx_dsb_shopify.util.platform_db_utils import get_platformdb_conn_str
 from jdx_dsb_shopify.util.shopify_utils import ShopifyHelper
 from jdx_dsb_shopify.util.util import fuzzy_merge
 

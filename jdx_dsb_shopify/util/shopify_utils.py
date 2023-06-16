@@ -16,7 +16,7 @@ class ShopifyHelper:
         self._access_token = get_secret_from_sm(secret_name)['SHOPIFY_TOKEN']
         self._shop_env = get_secret_from_sm(secret_name)['SHOP_ENV']
         self._product_endpoint = f'https://{self._shop_env}/admin/api/2022-07/products.json'
-        self._order_endpoint = f'https://{self._shop_env}/admin/api/2022-07/orders.json'
+        self._order_endpoint = f'https://{self._shop_env}/admin/api/2023-04/orders.json'
         self._headers = {
             'X-Shopify-Access-Token': self._access_token,
             'Content-Type': 'application/json'
@@ -61,6 +61,14 @@ class ShopifyHelper:
         r = requests.post(self._order_endpoint, data=json.dumps(order_info), headers=self.headers)
         return r
 
+    @log_start_stop
+    @log_runtime
+    def get_orders(self, order_ids:list):
+        r = requests.get(self._order_endpoint, params={'ids': json.dumps(order_ids), 'status': 'any'}, headers=self.headers)
+        return r
+    # ['5299801030905', '5300357005561']
+    # 'Overnight (1 business day - Monday to Friday)'
+    # 'Express (2 to 3 business days - Monday to Friday)'
     @staticmethod
     def create_product_info(
             product_title: str,
